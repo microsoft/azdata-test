@@ -11,6 +11,7 @@ import { StubDivContainer } from '../../stubs/modelView/stubDivContainer';
 import { StubFlexContainer } from '../../stubs/modelView/stubFlexContainer';
 import { StubRadioButton } from '../../stubs/modelView/stubRadioButton';
 import { StubText } from '../../stubs/modelView/stubText';
+import { StubToolbarContainer } from '../../stubs/modelView/stubToolbarContainer';
 
 export type ComponentAndMockComponentBuilder<C, B> = {
 	component: C,
@@ -27,7 +28,8 @@ export type ComponentFactories = {
 	groupContainer?: () => azdata.GroupContainer,
 	divContainer?: () => azdata.DivContainer,
 	flexContainer?: () => azdata.FlexContainer,
-	formContainer?: () => azdata.FormContainer
+	formContainer?: () => azdata.FormContainer,
+	toolbarContainer?: () => azdata.ToolbarContainer
 }
 
 /**
@@ -81,6 +83,10 @@ export function createModelViewMock(componentFactories?: ComponentFactories): {
 		const mockFormContainerBuilder = createFormContainerBuilderMock(componentFactories?.formContainer?.());
 		return mockFormContainerBuilder.object;
 	});
+	mockModelBuilder.setup(b => b.toolbarContainer()).returns(() => {
+		const mockFormContainerBuilder = createToolbarContainerBuilderMock(componentFactories?.toolbarContainer?.() ?? new StubToolbarContainer);
+		return mockFormContainerBuilder.object;
+	});
 	mockModelView.setup(mv => mv.modelBuilder).returns(() => mockModelBuilder.object);
 	return {
 		modelBuilderMock: mockModelBuilder,
@@ -91,6 +97,12 @@ export function createModelViewMock(componentFactories?: ComponentFactories): {
 export function createFormContainerBuilderMock(container?: azdata.FormContainer): TypeMoq.IMock<azdata.FormBuilder> {
 	const mockContainerBuilder = createContainerBuilderMock<azdata.FormContainer, azdata.ComponentProperties, azdata.FormBuilder>(container);
 	mockContainerBuilder.mockBuilder.setup(b => b.withFormItems(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => mockContainerBuilder.mockBuilder.object);
+	return mockContainerBuilder.mockBuilder;
+}
+
+export function createToolbarContainerBuilderMock(container?: azdata.ToolbarContainer): TypeMoq.IMock<azdata.ToolbarBuilder> {
+	const mockContainerBuilder = createContainerBuilderMock<azdata.ToolbarContainer, azdata.ComponentProperties, azdata.ToolbarBuilder>(container);
+	mockContainerBuilder.mockBuilder.setup(b => b.withToolbarItems(TypeMoq.It.isAny())).returns(() => mockContainerBuilder.mockBuilder.object);
 	return mockContainerBuilder.mockBuilder;
 }
 
