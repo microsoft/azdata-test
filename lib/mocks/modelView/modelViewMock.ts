@@ -102,7 +102,10 @@ export function createFormContainerBuilderMock(container?: azdata.FormContainer)
 
 export function createToolbarContainerBuilderMock(container?: azdata.ToolbarContainer): TypeMoq.IMock<azdata.ToolbarBuilder> {
 	const mockContainerBuilder = createContainerBuilderMock<azdata.ToolbarContainer, azdata.ComponentProperties, azdata.ToolbarBuilder>(container);
-	mockContainerBuilder.mockBuilder.setup(b => b.withToolbarItems(TypeMoq.It.isAny())).returns(() => mockContainerBuilder.mockBuilder.object);
+	mockContainerBuilder.mockBuilder.setup(b => b.withToolbarItems(TypeMoq.It.isAny())).returns((items) => {
+		mockContainerBuilder.component.addItems(items);
+		return mockContainerBuilder.mockBuilder.object
+	});
 	return mockContainerBuilder.mockBuilder;
 }
 
