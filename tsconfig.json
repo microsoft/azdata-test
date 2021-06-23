@@ -7,7 +7,8 @@
 		"declaration": true
 	},
 	"include": [
-		"lib"
+		"lib",
+		"typings"
 	],
 	"exclude": ["node_modules"]
 }

@@ -26,4 +26,7 @@ export class StubContainer extends StubComponent implements azdata.Container<any
 	setLayout(layout: any): void {
 		throw new Error('Method not implemented.');
 	}
+    setItemLayout(component: azdata.Component, layout: any): void {
+        throw new Error('Method not implemented.');
+    }
 }
