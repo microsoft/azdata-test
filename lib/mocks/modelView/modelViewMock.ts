@@ -150,6 +150,13 @@ export function createComponentBuilderMock<C extends azdata.Component, P extends
 		}
 		return mockComponentBuilder.object;
 	});
+    mockComponentBuilder.setup(b => b.withProps(TypeMoq.It.isAny())).returns((props) => {
+		// Apply the properties to the object directly
+		for (const key in props) {
+			component[key] = props[key];
+		}
+		return mockComponentBuilder.object;
+	});
 	mockComponentBuilder.setup(b => b.withValidation(TypeMoq.It.isAny())).returns(() => mockComponentBuilder.object);
 	mockComponentBuilder.setup(b => b.component()).returns(() => component!);
 	return {
