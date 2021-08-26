@@ -2,9 +2,9 @@
   <h1 align="center">azdata-test</h1>
 </p>
 
-This module helps you test Azure Data Studio extensions.
+This module helps you test Azure Data Studio extensions by providing a test runner as well as various stubs and mocks. 
 
-This is a fork of the [vscode-test](https://github.com/microsoft/vscode-test) package. The download, install and run functionality provided by that package has not yet been updated to work with Azure Data Studio - only the stubs and mocks are available for use.
+This is a fork of the [vscode-test](https://github.com/microsoft/vscode-test) package.
 
 Supported:
 
