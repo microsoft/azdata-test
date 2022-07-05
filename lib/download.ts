@@ -156,7 +156,7 @@ function unzipAzureDataStudio(azureDataStudioArchivePath: string) {
 export async function downloadAndUnzipAzureDataStudio(version?: DownloadVersion, platform?: DownloadPlatform): Promise<string> {
 	if (version) {
 		if (version === 'stable') {
-            console.log('fetch latest stable');
+			console.log('fetch latest stable');
 			version = await fetchLatestStableVersion();
 		} else {
 			/**
@@ -170,8 +170,8 @@ export async function downloadAndUnzipAzureDataStudio(version?: DownloadVersion,
 		}
 	} else {
 		version = await fetchLatestStableVersion();
-    }
-    console.log(`version ${version}`);
+	}
+	console.log(`version ${version}`);
 
 	const downloadedPath = path.resolve(adsTestDir, `ads-${version}`);
 	if (fs.existsSync(downloadedPath)) {
