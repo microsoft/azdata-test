@@ -5,14 +5,6 @@
 
 import * as azdata from 'azdata';
 import * as vscode from 'vscode';
-import { StubComponent } from './stubComponent';
-
-export class StubInputBox extends StubComponent implements azdata.InputBoxComponent {
-	readonly id = 'input-box';
-
-	onTextChanged: vscode.Event<any> = undefined!;
-	onEnterKeyPressed: vscode.Event<string> = undefined!;
-}
 
 export class StubCheckbox implements azdata.CheckBoxComponent {
 	private _onChanged = new vscode.EventEmitter<void>();
