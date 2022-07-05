@@ -31,7 +31,7 @@ export type ComponentFactories = {
 	flexContainer?: () => azdata.FlexContainer,
 	formContainer?: () => azdata.FormContainer,
 	toolbarContainer?: () => azdata.ToolbarContainer
-}
+};
 
 /**
  * Creates a mock ModelView to simulate interactions with the ADS ModelView API
@@ -105,7 +105,7 @@ export function createToolbarContainerBuilderMock(container?: azdata.ToolbarCont
 	const mockContainerBuilder = createContainerBuilderMock<azdata.ToolbarContainer, azdata.ComponentProperties, azdata.ToolbarBuilder>(container);
 	mockContainerBuilder.mockBuilder.setup(b => b.withToolbarItems(TypeMoq.It.isAny())).returns((items) => {
 		mockContainerBuilder.component.addItems(items);
-		return mockContainerBuilder.mockBuilder.object
+		return mockContainerBuilder.mockBuilder.object;
 	});
 	return mockContainerBuilder.mockBuilder;
 }
@@ -151,7 +151,7 @@ export function createComponentBuilderMock<C extends azdata.Component, P extends
 		}
 		return mockComponentBuilder.object;
 	});
-    mockComponentBuilder.setup(b => b.withProps(TypeMoq.It.isAny())).returns((props) => {
+	mockComponentBuilder.setup(b => b.withProps(TypeMoq.It.isAny())).returns((props) => {
 		// Apply the properties to the object directly
 		for (const key in props) {
 			component[key] = props[key];

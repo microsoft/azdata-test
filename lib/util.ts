@@ -25,9 +25,9 @@ switch (process.platform) {
 export function getAzureDataStudioDownloadUrl(version: string, platform?: DownloadPlatform) {
 	const downloadPlatform = platform || systemDefaultPlatform;
 	if (version === 'insiders') {
-        return `https://azuredatastudio-update.azurewebsites.net/latest/${downloadPlatform}/insider`;
-    }
-    return `https://azuredatastudio-update.azurewebsites.net/${version}/${downloadPlatform}/stable`;
+		return `https://azuredatastudio-update.azurewebsites.net/latest/${downloadPlatform}/insider`;
+	}
+	return `https://azuredatastudio-update.azurewebsites.net/${version}/${downloadPlatform}/stable`;
 }
 
 const HttpsProxyAgent = require('https-proxy-agent');
