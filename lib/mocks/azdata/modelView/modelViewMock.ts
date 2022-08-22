@@ -5,14 +5,14 @@
 
 import * as azdata from 'azdata';
 import * as TypeMoq from 'typemoq';
-import { StubButton } from '../../stubs/modelView/stubButton';
-import { StubCheckbox } from '../../stubs/modelView/stubCheckbox';
-import { StubDivContainer } from '../../stubs/modelView/stubDivContainer';
-import { StubFlexContainer } from '../../stubs/modelView/stubFlexContainer';
-import { StubInputBox } from '../../stubs/modelView/stubInputBox';
-import { StubRadioButton } from '../../stubs/modelView/stubRadioButton';
-import { StubText } from '../../stubs/modelView/stubText';
-import { StubToolbarContainer } from '../../stubs/modelView/stubToolbarContainer';
+import { StubButton } from '../../../stubs/modelView/stubButton';
+import { StubCheckbox } from '../../../stubs/modelView/stubCheckbox';
+import { StubDivContainer } from '../../../stubs/modelView/stubDivContainer';
+import { StubFlexContainer } from '../../../stubs/modelView/stubFlexContainer';
+import { StubInputBox } from '../../../stubs/modelView/stubInputBox';
+import { StubRadioButton } from '../../../stubs/modelView/stubRadioButton';
+import { StubText } from '../../../stubs/modelView/stubText';
+import { StubToolbarContainer } from '../../../stubs/modelView/stubToolbarContainer';
 
 export type ComponentAndMockComponentBuilder<C, B> = {
 	component: C,

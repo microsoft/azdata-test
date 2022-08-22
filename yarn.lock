@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@types/azdata@^1.37.0":
-  version "1.37.0"
-  resolved "https://registry.yarnpkg.com/@types/azdata/-/azdata-1.37.0.tgz#0557e7993939ee4d099548b3d708d33483ca6d2c"
-  integrity sha512-chmfkfvv9pfvBqWtFyvYatb4vvv7ljlySMFH1kDIXRXQLZ6iswzW2+RnzqKpB51jL4gmjUEKB7Rf+WloDaN7rg==
+"@types/azdata@^1.38.0":
+  version "1.38.0"
+  resolved "https://registry.yarnpkg.com/@types/azdata/-/azdata-1.38.0.tgz#205d8366c28df15d2514dd86fce06a52cd233546"
+  integrity sha512-yXvy8+j2LgWoe7cX33doTDdv/0d7LMDEm3IfrXZ/EU4AwwzjvKqSR/0Ae0CH3o8WOvDm63bws++gxDlmhoLsPg==
   dependencies:
     "@types/vscode" "*"
 
