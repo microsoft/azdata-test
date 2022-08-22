@@ -3,5 +3,5 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export * as azdata from './azdata';
-export * as vscode from './vscode';
+export * as queryeditor from './queryeditor';
+export * as modelView from './modelView';

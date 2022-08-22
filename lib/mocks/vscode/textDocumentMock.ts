@@ -9,7 +9,7 @@ import * as TypeMoq from 'typemoq';
 export type RangeWithContent = { range: vscode.Range, content: string };
 
 /**
- * Creates a mock of a vscode.TextDocument 
+ * Creates a mock of a vscode.TextDocument
  * @param uri The URI to give the document
  * @param contentOrRanges The content of the document. If just a string then that is returned when all context is gotten from the document, otherwise the array is a set of range to content mappings to return when that specified range is requested
  * @returns The mocked document
@@ -21,7 +21,7 @@ export function createTextDocumentMock(uri: vscode.Uri, contentOrRanges: string 
 		mock.setup(m => m.getText(undefined)).returns(() => contentOrRanges);
 	} else {
 		for (const rangeWithContent of contentOrRanges) {
-			mock.setup(m => m.getText(rangeWithContent.range)).returns(() => rangeWithContent.content);
+			mock.setup(m => m.getText(TypeMoq.It.is<vscode.Range>(r => r.isEqual(rangeWithContent.range)))).returns(() => rangeWithContent.content);
 		}
 	}
 	return mock;
