@@ -53,17 +53,7 @@ export function getDefaultMochaOptions(testSuiteName: string,): MochaOptions {
 	mochaOptions.timeout = testTimeout;
 	mochaOptions.retries = retries;
 
-	console.log('Mocha Options:');
-	console.log(`grep: ${mochaOptions.grep}`);
-	console.log(`invert: ${mochaOptions.invert}`);
-	console.log(`timeout: ${mochaOptions.timeout}`);
-	console.log(`retries: ${mochaOptions.retries}`);
-	if (mochaOptions.reporter) {
-		console.log(`reporter: ${mochaOptions.reporter}`);
-		console.log(`reporterEnabled: ${mochaOptions.reporterOptions.reporterEnabled}`);
-		console.log(`testsuitesTitle: ${mochaOptions.reporterOptions.mochaJunitReporterReporterOptions.testsuitesTitle}`);
-		console.log(`mochaFile: ${mochaOptions.reporterOptions.mochaJunitReporterReporterOptions.mochaFile}`);
-	}
+	console.log(`Mocha Options: ${JSON.stringify(mochaOptions)}`);
 
 	return mochaOptions;
 }
