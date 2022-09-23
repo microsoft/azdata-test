@@ -2,7 +2,7 @@
   <h1 align="center">azdata-test</h1>
 </p>
 
-This module helps you test Azure Data Studio extensions by providing a test runner as well as various stubs and mocks. 
+This module helps you test Azure Data Studio extensions by providing a test runner as well as various stubs and mocks.
 
 This is a fork of the [vscode-test](https://github.com/microsoft/vscode-test) package.
 
@@ -20,7 +20,7 @@ This package provides a set of basic stubs and mocks to help test various parts 
 These are located in the `lib/mocks` and `lib/stubs` folders.
 ## Usage
 
-See [./sample](./sample) for a runnable sample, with [Azure DevOps Pipelines](https://github.com/microsoft/azdata-test/blob/master/sample/azure-pipelines.yml) and [Travis CI](https://github.com/microsoft/azdata-test/blob/master/.travis.yml) configuration.
+and [Travis CI](https://github.com/microsoft/azdata-test/blob/master/.travis.yml) configuration.
 
 ```ts
 async function go() {
@@ -124,7 +124,6 @@ go()
 - `yarn install`
 - Make necessary changes in [`lib`](./lib)
 - `yarn compile` (or `yarn watch`)
-- In [`sample`](./sample), run `yarn install`, `yarn compile` and `yarn test` to make sure integration test can run successfully
 
 ## Releasing
 
