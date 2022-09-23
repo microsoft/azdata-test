@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as path from 'path';
-import { MochaOptions } from 'mocha'
+import { MochaOptions } from 'mocha';
 
 /**
  * Get default mocha options for ADS test, using the below environment variables to control what values various options are set to.
@@ -22,7 +22,7 @@ export function getDefaultMochaOptions(testSuiteName: string,): MochaOptions {
 		timeout: 10000
 	};
 
-	const grep = process.env.ADS_TEST_GREP
+	const grep = process.env.ADS_TEST_GREP;
 	const invert = getBoolean(process.env.ADS_TEST_INVERT_GREP);
 	const runUnstableTest = getBoolean(process.env.RUN_UNSTABLE_TESTS);
 	const testTimeout = getNumber(process.env.ADS_TEST_TIMEOUT);
@@ -34,7 +34,7 @@ export function getDefaultMochaOptions(testSuiteName: string,): MochaOptions {
 		mochaOptions.invert = invert;
 	} else {
 		if (!runUnstableTest) {
-			mochaOptions.grep = "@UNSTABLE@";
+			mochaOptions.grep = '@UNSTABLE@';
 			mochaOptions.invert = true;
 		}
 	}
@@ -53,7 +53,7 @@ export function getDefaultMochaOptions(testSuiteName: string,): MochaOptions {
 	mochaOptions.timeout = testTimeout;
 	mochaOptions.retries = retries;
 
-	console.log("Mocha Options:");
+	console.log('Mocha Options:');
 	console.log(`grep: ${mochaOptions.grep}`);
 	console.log(`invert: ${mochaOptions.invert}`);
 	console.log(`timeout: ${mochaOptions.timeout}`);
