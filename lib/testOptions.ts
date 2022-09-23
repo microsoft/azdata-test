@@ -4,29 +4,29 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as path from 'path';
+import { MochaOptions } from 'mocha'
 
 /**
- * Get the default mocha options for ads extension unit test. The following environment variables will be examined.
+ * Get default mocha options for ADS test, using the below environment variables to control what values various options are set to.
  * ADS_TEST_GREP: custom test filter.
  * ADS_TEST_INVERT_GREP: whether to invert the grep results.
- * RUN_UNSTABLE_TESTS: whether to run the unstable tests. By default, only the stable tests will be executed unless this variable is set to true. If ADS_TEST_GREP is specified, this variable will be ignored.
+ * RUN_UNSTABLE_TESTS: whether to run unstable tests (tests that have @UNSTABLE@ in their name). By default, only the stable tests will be executed unless this variable is set to true. If ADS_TEST_GREP is specified, this variable will be ignored.
  * ADS_TEST_TIMEOUT: test timeout.
  * ADS_TEST_RETRIES: number of retries.
  * BUILD_ARTIFACTSTAGINGDIRECTORY: target directory for the test reports.
  * @param testSuiteName The test suite name.
  */
-export function getDefaultMochaOptions(testSuiteName: string): any {
-	const mochaOptions: any = {
+export function getDefaultMochaOptions(testSuiteName: string,): MochaOptions {
+	const mochaOptions: MochaOptions = {
 		ui: 'bdd',
-		useColors: true,
 		timeout: 10000
 	};
 
 	const grep = process.env.ADS_TEST_GREP
-	const invert = parseInt(process.env.ADS_TEST_INVERT_GREP);
-	const runUnstableTest = process.env.RUN_UNSTABLE_TESTS === 'true';
-	const testTimeout = parseInt(process.env.ADS_TEST_TIMEOUT);
-	const retries = parseInt(process.env.ADS_TEST_RETRIES);
+	const invert = getBoolean(process.env.ADS_TEST_INVERT_GREP);
+	const runUnstableTest = getBoolean(process.env.RUN_UNSTABLE_TESTS);
+	const testTimeout = getNumber(process.env.ADS_TEST_TIMEOUT);
+	const retries = getNumber(process.env.ADS_TEST_RETRIES);
 	const artifactDirectory = process.env.BUILD_ARTIFACTSTAGINGDIRECTORY;
 	// If the ADS_TEST_GREP is set, it will be used otherwise, RUN_UNSTABLE_TESTS will be checked to determine whether to only run the stable tests or the whole test suite.
 	if (grep) {
@@ -37,12 +37,6 @@ export function getDefaultMochaOptions(testSuiteName: string): any {
 			mochaOptions.grep = "@UNSTABLE@";
 			mochaOptions.invert = true;
 		}
-	}
-	if (testTimeout) {
-		mochaOptions.timeout = testTimeout;
-	}
-	if (retries) {
-		mochaOptions.retries = retries;
 	}
 
 	if (artifactDirectory) {
@@ -55,6 +49,30 @@ export function getDefaultMochaOptions(testSuiteName: string): any {
 			}
 		};
 	}
-	console.log("Test options:" + mochaOptions);
+
+	mochaOptions.timeout = testTimeout;
+	mochaOptions.retries = retries;
+
+	console.log("Mocha Options:");
+	console.log(`grep: ${mochaOptions.grep}`);
+	console.log(`invert: ${mochaOptions.invert}`);
+	console.log(`timeout: ${mochaOptions.timeout}`);
+	console.log(`retries: ${mochaOptions.retries}`);
+	if (mochaOptions.reporter) {
+		console.log(`reporter: ${mochaOptions.reporter}`);
+		console.log(`reporterEnabled: ${mochaOptions.reporterOptions.reporterEnabled}`);
+		console.log(`testsuitesTitle: ${mochaOptions.reporterOptions.mochaJunitReporterReporterOptions.testsuitesTitle}`);
+		console.log(`mochaFile: ${mochaOptions.reporterOptions.mochaJunitReporterReporterOptions.mochaFile}`);
+	}
+
 	return mochaOptions;
+}
+
+function getBoolean(val: string | undefined): boolean | undefined {
+	return val ? val.toLowerCase() === 'true' : undefined;
+}
+
+function getNumber(val: string | undefined): number | undefined {
+	const num = parseInt(val || '');
+	return isNaN(num) ? undefined : num;
 }
