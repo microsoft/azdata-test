@@ -13,11 +13,8 @@ install:
 
 script:
   - |
-    echo ">>> Compile vscode-test"
+    echo ">>> Compile azdata-test"
     yarn && yarn compile
-    echo ">>> Compiled vscode-test"
-    cd sample
-    echo ">>> Run sample integration test"
-    yarn && yarn compile && yarn test
+    echo ">>> Compiled azdata-test"
 
 cache: yarn
