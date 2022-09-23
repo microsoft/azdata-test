@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/azdata-test",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -w -p ./",
