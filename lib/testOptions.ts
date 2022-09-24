@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as path from 'path';
-import { MochaOptions } from 'mocha';
+import { InterfaceContributions, MochaOptions } from 'mocha';
 
 /**
  * Get default mocha options for ADS test, using the below environment variables to control what values various options are set to.
@@ -15,10 +15,11 @@ import { MochaOptions } from 'mocha';
  * ADS_TEST_RETRIES: number of retries.
  * BUILD_ARTIFACTSTAGINGDIRECTORY: target directory for the test reports.
  * @param testSuiteName The test suite name.
+ * @param ui mocha ui.
  */
-export function getDefaultMochaOptions(testSuiteName: string,): MochaOptions {
+export function getDefaultMochaOptions(testSuiteName: string, ui: keyof InterfaceContributions = 'bdd'): MochaOptions {
 	const mochaOptions: MochaOptions = {
-		ui: 'bdd',
+		ui: ui,
 		timeout: 10000
 	};
 
@@ -50,7 +51,9 @@ export function getDefaultMochaOptions(testSuiteName: string,): MochaOptions {
 		};
 	}
 
-	mochaOptions.timeout = testTimeout;
+	if (testTimeout !== undefined) {
+		mochaOptions.timeout = testTimeout;
+	}
 	mochaOptions.retries = retries;
 
 	console.log(`Mocha Options: ${JSON.stringify(mochaOptions)}`);
