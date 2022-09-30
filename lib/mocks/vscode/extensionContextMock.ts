@@ -13,7 +13,7 @@ const TMP_DIR = vscode.Uri.file(os.tmpdir());
 /**
  * Creates a mock of a vscode.ExtensionContext
  * @param storageUri The base storage URI to use, defaults to the temp directory
- * @returns The mocked editor
+ * @returns The mocked extension context
  */
 export function createExtensionContextMock(storageUri: vscode.Uri = TMP_DIR): TypeMoq.IMock<vscode.ExtensionContext> {
 	const mock = TypeMoq.Mock.ofType<vscode.ExtensionContext>();
