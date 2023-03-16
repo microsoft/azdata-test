@@ -11,7 +11,7 @@ export class StubInputBox extends StubComponent implements azdata.InputBoxCompon
 	readonly id = 'input-box';
 
 	value?: string;
-	ariaLive?: string;
+	ariaLive?: azdata.AriaLiveValue;
 	placeHolder?: string;
 	inputType?: azdata.InputBoxInputType;
 	required?: boolean;

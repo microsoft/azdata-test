@@ -1525,4 +1525,9 @@ declare module 'azdata' {
 		 */
 		link: LinkArea;
 	}
+
+	/**
+	 * Supported values for aria-live accessibility attribute
+	 */
+	export type AriaLiveValue = 'polite' | 'assertive' | 'off';
 }
