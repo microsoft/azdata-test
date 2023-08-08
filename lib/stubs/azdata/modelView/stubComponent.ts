@@ -7,6 +7,7 @@ import * as azdata from 'azdata';
 import * as vscode from 'vscode';
 
 export class StubComponent implements azdata.Component {
+	ariaHidden?: boolean;
 	id: string;
 	updateProperties(properties: { [key: string]: any; }): Thenable<void> {
 		throw new Error('Method not implemented.');
@@ -25,6 +26,9 @@ export class StubComponent implements azdata.Component {
 	focus(): Thenable<void> {
 		throw new Error('Method not implemented.');
 	}
+	dispose() {
+		throw new Error('Method not implemented.');
+	}
 	height?: string | number = 0;
 	width?: string | number = 0;
 	position?: azdata.PositionType = 'initial';
@@ -33,5 +37,5 @@ export class StubComponent implements azdata.Component {
 	ariaLabel?: string = '';
 	ariaRole?: string = '';
 	ariaSelected?: boolean = false;
-	CSSStyles?: { [key: string]: string; } = { };
+	CSSStyles?: { [key: string]: string; } = {};
 }
