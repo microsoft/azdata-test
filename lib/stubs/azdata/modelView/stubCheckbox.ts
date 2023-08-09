@@ -36,4 +36,6 @@ export class StubCheckbox implements azdata.CheckBoxComponent {
 	validate(): Thenable<boolean> { throw new Error('Not implemented'); }
 
 	focus(): Thenable<void> { return Promise.resolve(); }
+
+	dispose() { }
 }

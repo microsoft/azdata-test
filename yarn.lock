@@ -28,10 +28,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@types/azdata@^1.38.0":
-  version "1.38.0"
-  resolved "https://registry.yarnpkg.com/@types/azdata/-/azdata-1.38.0.tgz#205d8366c28df15d2514dd86fce06a52cd233546"
-  integrity sha512-yXvy8+j2LgWoe7cX33doTDdv/0d7LMDEm3IfrXZ/EU4AwwzjvKqSR/0Ae0CH3o8WOvDm63bws++gxDlmhoLsPg==
+"@types/azdata@^1.45.0":
+  version "1.45.0"
+  resolved "https://registry.yarnpkg.com/@types/azdata/-/azdata-1.45.0.tgz#19b441d7a0a29546c87d915419964d283f6d15d4"
+  integrity sha512-OYAAPPORFgQw9Dw9gXPSXHeQdFWOggci5qF7D0is+QMAwAx6FG4ja5PO6Jwvv/twB+R/ltLDYhx95zRP42e3nQ==
   dependencies:
     "@types/vscode" "*"
 

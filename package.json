@@ -21,7 +21,7 @@
     "mocha-multi-reporters": "^1.1.7"
   },
   "devDependencies": {
-    "@types/azdata": "^1.38.0",
+    "@types/azdata": "^1.45.0",
     "@types/node": "^12.11.7",
     "@types/rimraf": "^2.0.2",
     "@types/mocha": "^9.1.1",

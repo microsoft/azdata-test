@@ -8,6 +8,7 @@
 import * as vscode from 'vscode';
 
 declare module 'azdata' {
+
 	export namespace nb {
 		export interface NotebookDocument {
 			/**
@@ -28,25 +29,6 @@ declare module 'azdata' {
 			 * The list of languages that are supported for this kernel.
 			 */
 			supportedLanguages?: string[];
-			/**
-			 * The original name for this kernel.
-			 */
-			oldName?: string;
-			/**
-			 * The original display name for this kernel.
-			 */
-			oldDisplayName?: string;
-			/**
-			 * The original language name for this kernel.
-			 */
-			oldLanguage?: string;
-		}
-
-		export interface ILanguageInfo {
-			/**
-			 * The original name for this language.
-			 */
-			oldName?: string;
 		}
 
 		export interface IStandardKernel {
@@ -80,21 +62,9 @@ declare module 'azdata' {
 
 		export interface IExecuteRequest {
 			/**
-			 * URI of the notebook document that is sending this execute request.
-			 */
-			notebookUri: vscode.Uri;
-			/**
-			 * URI of the notebook cell that is sending this execute request.
-			 */
-			cellUri: vscode.Uri;
-			/**
 			 * The language of the notebook document that is executing this request.
 			 */
 			language: string;
-			/**
-			 * The index of the cell which the code being executed is from.
-			 */
-			cellIndex: number;
 		}
 
 		export interface INotebookMetadata {
@@ -125,7 +95,7 @@ declare module 'azdata' {
 		}
 
 		/**
-		 * An event that is emitted when a [notebook document](#NotebookDocument) is closed.
+		 * An event that is emitted when a {@link NotebookDocument} is closed.
 		 */
 		export const onDidCloseNotebookDocument: vscode.Event<NotebookDocument>;
 
@@ -146,6 +116,24 @@ declare module 'azdata' {
 			 */
 			restart(): Thenable<void>;
 		}
+	}
+
+	export interface LoadingComponentBase {
+		/**
+		* When true, the component will display a loading spinner.
+		*/
+		loading?: boolean;
+
+		/**
+		 * This sets the alert text which gets announced when the loading spinner is shown.
+		 */
+		loadingText?: string;
+
+		/**
+		 * The text to display while loading is set to false. Will also be announced through screen readers
+		 * once loading is completed.
+		 */
+		loadingCompletedText?: string;
 	}
 
 	/**
@@ -399,13 +387,127 @@ declare module 'azdata' {
 		title: string;
 	}
 
-	/*
-	 * Add optional azureAccount for connectionWidget.
-	 */
+	export interface ConnectionProvider extends DataProvider {
+		/**
+		 * Changes a user's password for the scenario of password expiration during SQL Authentication. (for Azure Data Studio use only)
+		 */
+		changePassword?(connectionUri: string, connectionInfo: ConnectionInfo, newPassword: string): Thenable<PasswordChangeResult>;
+	}
+
+	// Password Change Request ----------------------------------------------------------------------
+	export interface PasswordChangeResult {
+		/**
+		 * Whether the password change was successful
+		 */
+		result: boolean;
+		/**
+		 * Error message if the password change was unsuccessful
+		 */
+		errorMessage?: string;
+	}
+
 	export interface IConnectionProfile extends ConnectionInfo {
 		azureAccount?: string;
 		azureResourceId?: string;
 		azurePortalEndpoint?: string;
+	}
+
+	export interface PromptFailedResult extends ProviderError { }
+
+	export interface ProviderError {
+		/**
+		 * Error name
+		 */
+		name?: string;
+
+		/**
+		 * Error code
+		 */
+		errorCode?: string;
+
+		/**
+		 * Error message
+		 */
+		errorMessage?: string;
+	}
+
+
+	export namespace diagnostics {
+		/**
+		 * Represents a diagnostics provider of accounts.
+		 */
+		export interface ErrorDiagnosticsProviderMetadata {
+			/**
+			 * The id of the provider (ex. a connection provider) that a diagnostics provider will handle errors for.
+			 * Note: only ONE diagnostic provider per id/name at a time.
+			 */
+			targetProviderId: string;
+		}
+
+		export interface ConnectionDiagnosticsResult {
+			/**
+			 * Whether the error was handled or not.
+			 */
+			handled: boolean,
+			/**
+			 * Whether reconnect should be attempted.
+			 */
+			reconnect?: boolean,
+			/**
+			 * If given, the new set of connection options to assign to the original connection profile, overwriting any previous options.
+			 */
+			options?: { [name: string]: any };
+		}
+
+		/**
+		 * Provides error information
+		 */
+		export interface IErrorInformation {
+			/**
+			 * Error code
+			 */
+			errorCode: number,
+			/**
+			 * Error Message
+			 */
+			errorMessage: string,
+			/**
+			 * Stack trace of error
+			 */
+			messageDetails: string
+		}
+
+		/**
+		 * Diagnostics object for handling errors for a provider.
+		 */
+		export interface ErrorDiagnosticsProvider {
+			/**
+			 * Called when a connection error occurs, allowing the provider to optionally handle the error and fix any issues before continuing with completing the connection.
+			 * @param errorInfo The error information of the connection error.
+			 * @param connection The connection profile that caused the error.
+			 * @returns ConnectionDiagnosticsResult: The result from the provider for whether the error was handled.
+			 */
+			handleConnectionError(errorInfo: IErrorInformation, connection: connection.ConnectionProfile): Thenable<ConnectionDiagnosticsResult>;
+		}
+
+		/**
+		 * Registers provider with instance of Diagnostic Provider implementation.
+		 * Note: only ONE diagnostic provider object can be assigned to a specific provider at a time.
+		 * @param providerMetadata Additional data used to register the provider
+		 * @param errorDiagnostics The provider's diagnostic object that handles errors.
+		 * @returns  A disposable that when disposed will unregister the provider
+		 */
+		export function registerDiagnosticsProvider(providerMetadata: ErrorDiagnosticsProviderMetadata, errorDiagnostics: ErrorDiagnosticsProvider): vscode.Disposable;
+	}
+
+	export namespace connection {
+
+		/**
+		 * Opens the change password dialog.
+		 * @param profile The connection profile to change the password for.
+		 * @returns The new password that is returned from the operation or undefined if unsuccessful.
+		 */
+		export function openChangePasswordDialog(profile: IConnectionProfile): Thenable<string | undefined>;
 	}
 
 	/*
@@ -419,7 +521,89 @@ declare module 'azdata' {
 
 	export interface ConnectionOption {
 		defaultValueOsOverrides?: DefaultValueOsOverride[];
+
+		/**
+		 * Used to define placeholder text
+		 */
+		placeholder?: string;
+
+		/**
+		 * When set to true, the respective connection option will be rendered on the main connection dialog
+		 * and not the Advanced Options window.
+		 */
+		showOnConnectionDialog?: boolean;
+
+		/**
+		 * Used to define list of values based on which another option is rendered visible/hidden.
+		 */
+		onSelectionChange?: SelectionChangeEvent[];
 	}
+
+	export interface ServiceOption {
+		/**
+		 * Used to define placeholder text
+		 */
+		placeholder?: string;
+
+		/**
+		 * Used to define list of values based on which another option is rendered visible/hidden.
+		 */
+		onSelectionChange?: SelectionChangeEvent[];
+	}
+	/**
+	 * This change event defines actions
+	 */
+	export interface SelectionChangeEvent {
+		/**
+		 * Values that affect actions defined in this event.
+		 */
+		values: string[];
+
+		/**
+		 * Action to be taken on another option when selected value matches to the list of values provided.
+		 */
+		dependentOptionActions: DependentOptionAction[];
+	}
+
+	export interface DependentOptionAction {
+		/**
+		 * Name of option affected by defined action.
+		 */
+		optionName: string,
+
+		/**
+		 * Action to be taken, Supported values: 'show', 'hide'.
+		 */
+		action: string;
+
+		/**
+		 * Whether or not the option should be set to required when visible. Defaults to false.
+		 * NOTE: Since this is dynamically defined, option values are not updated on 'show' and validation is not performed.
+		 * When set to true, providers must handle property validation.
+		 */
+		required?: boolean;
+	}
+
+	// Object Explorer interfaces  --------------------------------
+	export interface ObjectExplorerSession {
+		/**
+		 * Authentication token for the current session.
+		 */
+		securityToken?: accounts.AccountSecurityToken | undefined;
+	}
+
+	export interface ExpandNodeInfo {
+		/**
+		 * Authentication token for the current session.
+		 */
+		securityToken?: accounts.AccountSecurityToken | undefined;
+
+		/**
+		 * Filters to apply to the child nodes being returned
+		 */
+		filters?: NodeFilter[];
+	}
+	// End Object Explorer interfaces  ----------------------------
 
 	export interface TaskInfo {
 		targetLocation?: string;
@@ -477,34 +661,7 @@ declare module 'azdata' {
 		type?: ExtensionNodeType;
 	}
 
-	export interface AccountDisplayInfo {
-		email?: string;
-		name?: string;
-	}
-
-	export interface AccountProvider {
-		/**
-		 * Generates a security token for the provided account and tenant
-		 * @param account The account to generate a security token for
-		 * @param resource The resource to get the token for
-		 * @return Promise to return a security token object
-		 */
-		getAccountSecurityToken(account: Account, tenant: string, resource: AzureResource): Thenable<accounts.AccountSecurityToken | undefined>;
-	}
-
-	export interface AccountKey {
-		/**
-		 * A version string for an account
-		 */
-		accountVersion?: string;
-	}
-
-	export interface Account {
-		/**
-		 * Specifies if an account should be deleted
-		 */
-		delete?: boolean;
-	}
+	export interface Component extends vscode.Disposable { }
 
 	export namespace workspace {
 		/**
@@ -514,13 +671,13 @@ declare module 'azdata' {
 
 		/**
 		 * Enters the workspace with the provided path
-		 * @param workspacefile
+		 * @param workspaceFile
 		 */
 		export function enterWorkspace(workspaceFile: vscode.Uri): Promise<void>;
 
 		/**
 		 * Saves and enters the workspace with the provided path
-		 * @param workspacefile
+		 * @param workspaceFile
 		 */
 		export function saveAndEnterWorkspace(workspaceFile: vscode.Uri): Promise<void>;
 	}
@@ -532,11 +689,34 @@ declare module 'azdata' {
 		headerFilter?: boolean,
 	}
 
-	export interface TableComponent {
+	export type ExecutionPlanData = executionPlan.ExecutionPlanGraphInfo | executionPlan.ExecutionPlanGraph[];
+
+	export interface ExecutionPlanComponentProperties extends ComponentProperties {
 		/**
-		 * Append data to an existing table data.
+		 * Provide the execution plan file to be displayed. In case of execution plan graph info, the file type will determine the provider to be used to generate execution plan graphs
 		 */
-		appendData(data: any[][]): Thenable<void>;
+		data?: ExecutionPlanData;
+	}
+
+	/**
+	 * Defines the executionPlan component
+	 */
+	export interface ExecutionPlanComponent extends Component, ExecutionPlanComponentProperties {
+	}
+
+	export interface ModelBuilder {
+		executionPlan(): ComponentBuilder<ExecutionPlanComponent, ExecutionPlanComponentProperties>;
+	}
+
+	export interface ListViewOption {
+		/**
+		 * The optional accessibility label for the column. Default is the label for the list view option.
+		 */
+		ariaLabel?: string;
+		/**
+		 * Specify the icon for the option. The value could the path to the icon or and ADS icon defined in {@link SqlThemeIcon}.
+		 */
+		icon?: IconPath;
 	}
 
 	export interface IconColumnCellValue {
@@ -575,6 +755,10 @@ declare module 'azdata' {
 		 * The url to open.
 		 */
 		url?: string;
+		/**
+		 * The role of the hyperlink. By default, the role is 'link' and the url will be opened in a new tab.
+		 */
+		role?: 'button' | 'link';
 	}
 
 	export interface ContextMenuColumnCellValue {
@@ -653,20 +837,54 @@ declare module 'azdata' {
 		parentTypeName?: string;
 	}
 
+	/**
+	 * Represents a selected range in the result grid.
+	 */
+	export interface SelectionRange {
+		fromRow: number;
+		toRow: number;
+		fromColumn: number;
+		toColumn: number;
+	}
+
+	/**
+	 * Parameters for the copy results request.
+	 */
+	export interface CopyResultsRequestParams {
+		/**
+		 * URI of the editor.
+		 */
+		ownerUri: string;
+		/**
+		 * Index of the batch.
+		 */
+		batchIndex: number;
+		/**
+		 * Index of the result set.
+		 */
+		resultSetIndex: number;
+		/**
+		 * Whether to include the column headers.
+		 */
+		includeHeaders: boolean
+		/**
+		 * The selected ranges to be copied.
+		 */
+		selections: SelectionRange[];
+	}
+
 	export interface QueryProvider {
 		/**
 		 * Notify clients that the URI for a connection has been changed.
 		 */
-		connectionUriChanged(newUri: string, oldUri: string): Thenable<void>;
-	}
-
-	export namespace accounts {
-		export interface AccountSecurityToken {
-			/**
-			 * Access token expiry timestamp
-			 */
-			expiresOn?: number
-		}
+		connectionUriChanged?(newUri: string, oldUri: string): Thenable<void>;
+		/**
+		 * Copy the selected data to the clipboard.
+		 * This is introduced to address the performance issue of large amount of data to ADS side.
+		 * ADS will use this if 'supportCopyResultsToClipboard' property is set to true in the provider contribution point in extension's package.json.
+		 * Otherwise, The default handler will load all the selected data to ADS and perform the copy operation.
+		 */
+		copyResults?(requestParams: CopyResultsRequestParams): Thenable<void>;
 	}
 
 	export enum DataProviderType {
@@ -684,9 +902,10 @@ declare module 'azdata' {
 		 * Open a table designer window.
 		 * @param providerId The table designer provider Id.
 		 * @param tableInfo The table information. The object will be passed back to the table designer provider as the unique identifier for the table.
-		 * @param telemetryInfo: Optional Key-value pair containing any extra information that needs to be sent via telemetry
+		 * @param telemetryInfo Optional Key-value pair containing any extra information that needs to be sent via telemetry
+		 * @param objectExplorerContext Optional The context used to refresh Object Explorer after the table is created or edited
 		 */
-		export function openTableDesigner(providerId: string, tableInfo: TableInfo, telemetryInfo?: { [key: string]: string }): Thenable<void>;
+		export function openTableDesigner(providerId: string, tableInfo: TableInfo, telemetryInfo?: { [key: string]: string }, objectExplorerContext?: ObjectExplorerContext): Thenable<void>;
 
 		/**
 		 * Definition for the table designer provider.
@@ -806,6 +1025,7 @@ declare module 'azdata' {
 			ForeignKeys = 'foreignKeys',
 			CheckConstraints = 'checkConstraints',
 			Indexes = 'indexes',
+			PrimaryKey = 'primaryKey',
 			PrimaryKeyName = 'primaryKeyName',
 			PrimaryKeyDescription = 'primaryKeyDescription',
 			PrimaryKeyColumns = 'primaryKeyColumns'
@@ -934,6 +1154,10 @@ declare module 'azdata' {
 			 */
 			additionalPrimaryKeyProperties?: DesignerDataPropertyInfo[];
 			/**
+			 * Components to be placed under the pre-defined tabs.
+			 */
+			additionalComponents?: DesignerDataPropertyWithTabInfo[];
+			/**
 			 * Whether to use advanced save mode. for advanced save mode, a publish changes dialog will be opened with preview of changes.
 			 */
 			useAdvancedSaveMode: boolean;
@@ -1003,6 +1227,16 @@ declare module 'azdata' {
 			 * The properties of the component.
 			 */
 			componentProperties: InputBoxProperties | CheckBoxProperties | DropDownProperties | DesignerTableProperties;
+		}
+
+		/**
+		 * The definition of the property in the designer with tab info.
+		 */
+		export interface DesignerDataPropertyWithTabInfo extends DesignerDataPropertyInfo {
+			/**
+			 * The tab info where this property belongs to.
+			 */
+			tab: TableProperty.Columns | TableProperty.PrimaryKey | TableProperty.ForeignKeys | TableProperty.CheckConstraints | TableProperty.Indexes;
 		}
 
 		/**
@@ -1227,6 +1461,14 @@ declare module 'azdata' {
 			 */
 			mimeType: string;
 			/**
+			 * Whether user confirmation is required, the default value is false.
+			 */
+			requireConfirmation?: boolean;
+			/**
+			 * The confirmation text.
+			 */
+			confirmationText?: string;
+			/**
 			 * The table schema validation error.
 			 */
 			schemaValidationError?: string;
@@ -1283,6 +1525,10 @@ declare module 'azdata' {
 			 */
 			elapsedTimeInMs: number;
 			/**
+			 * CPU time taken by the node operation in milliseconds
+			 */
+			elapsedCpuTimeInMs: number;
+			/**
 			 * Node properties to be shown in the tooltip
 			 */
 			properties: ExecutionPlanGraphElementProperty[];
@@ -1310,6 +1556,33 @@ declare module 'azdata' {
 			 * Warning/parallelism badges applicable to the current node
 			 */
 			badges: ExecutionPlanBadge[];
+			/**
+			 * Data to show in top operations table for the node.
+			 */
+			topOperationsData: TopOperationsDataItem[];
+			/**
+			 * Output row count associated with the node
+			 */
+			rowCountDisplayString: string;
+			/**
+			 * Cost string for the node
+			 */
+			costDisplayString: string;
+			/**
+			 * Cost metrics for the node
+			 */
+			costMetrics: CostMetric[];
+		}
+
+		export interface CostMetric {
+			/**
+			 * Name of the cost metric.
+			 */
+			name: string;
+			/**
+			 * The value of the cost metric
+			 */
+			value: number | undefined;
 		}
 
 		export interface ExecutionPlanBadge {
@@ -1460,6 +1733,11 @@ declare module 'azdata' {
 			secondComparisonResult: ExecutionGraphComparisonResult;
 		}
 
+		export interface IsExecutionPlanResult {
+			isExecutionPlan: boolean;
+			queryExecutionPlanFileExtension: string;
+		}
+
 		export interface ExecutionPlanProvider extends DataProvider {
 			// execution plan service methods
 
@@ -1474,6 +1752,26 @@ declare module 'azdata' {
 			 * @param secondPlanFile file that contains the second execution plan.
 			 */
 			compareExecutionPlanGraph(firstPlanFile: ExecutionPlanGraphInfo, secondPlanFile: ExecutionPlanGraphInfo): Thenable<ExecutionPlanComparisonResult>;
+			/**
+			 * Determines if the provided value is an execution plan and returns the appropriate file extension.
+			 * @param value String that needs to be checked.
+			 */
+			isExecutionPlan(value: string): Thenable<IsExecutionPlanResult>;
+		}
+
+		export interface TopOperationsDataItem {
+			/**
+			 * Column name for the top operation data item
+			 */
+			columnName: string;
+			/**
+			 * Cell data type for the top operation data item
+			 */
+			dataType: ExecutionPlanGraphElementPropertyDataType;
+			/**
+			 * Cell value for the top operation data item
+			 */
+			displayValue: string | number | boolean;
 		}
 	}
 
@@ -1526,8 +1824,218 @@ declare module 'azdata' {
 		link: LinkArea;
 	}
 
+	export interface TextComponentProperties {
+		/**
+		 * Corresponds to the aria-live accessibility attribute for this component
+		 */
+		ariaLive?: AriaLiveValue;
+	}
+
+	export interface ContainerProperties extends ComponentProperties {
+		/**
+		 * Corresponds to the aria-live accessibility attribute for this component
+		 */
+		ariaLive?: AriaLiveValue;
+	}
+
+	export interface DropDownProperties {
+		/**
+		 * Whether or not an option in the list must be selected or a "new" option can be set. Only applicable when 'editable' is true. Default false.
+		 */
+		strictSelection?: boolean;
+	}
+
+	export interface NodeInfo {
+		/**
+		 * The object type of the node. Node type is used to determine the icon, the object type is the actual type of the node, e.g. for Tables node
+		 * under the database, the nodeType is Folder, the objectType is be Tables.
+		 */
+		objectType?: string;
+		/*
+		 * The path of the parent node.
+		 */
+		parentNodePath: string;
+		/**
+		 * Filterable properties that this node supports
+		 */
+		filterableProperties?: NodeFilterProperty[];
+	}
+
+	export interface NodeFilterProperty {
+		/**
+		 * The non-localized name of the filter property
+		 */
+		name: string;
+		/**
+		 * The name of the filter property displayed to the user
+		 */
+		displayName: string;
+		/**
+		 * The type of the filter property
+		 */
+		type: NodeFilterPropertyDataType;
+		/**
+		 * The description of the filter property
+		 */
+		description: string;
+	}
+
 	/**
-	 * Supported values for aria-live accessibility attribute
+	 * NodeFilterChoiceProperty is used to define the choices for the filter property if the type is choice
 	 */
-	export type AriaLiveValue = 'polite' | 'assertive' | 'off';
+	export interface NodeFilterChoiceProperty extends NodeFilterProperty {
+		/**
+		 * The list of choices for the filter property if the type is choice
+		 */
+		choices: NodeFilterChoicePropertyValue[];
+	}
+
+	export interface NodeFilterChoicePropertyValue {
+		/**
+		 * The value of the choice
+		 */
+		value: string;
+		/**
+		 * The display name of the choice
+		 * If not specified, the value will be used as the display name
+		 * If specified, the display name will be used in the dropdown
+		 */
+		displayName?: string;
+	}
+
+	export interface NodeFilter {
+		/**
+		 * The name of the filter property
+		 */
+		name: string;
+		/**
+		 * The operator of the filter property
+		 */
+		operator: NodeFilterOperator;
+		/**
+		 * The applied values of the filter property
+		 */
+		value: string | string[] | number | number[] | boolean | undefined;
+	}
+
+	export enum NodeFilterPropertyDataType {
+		String = 0,
+		Number = 1,
+		Boolean = 2,
+		Date = 3,
+		Choice = 4
+	}
+
+	export enum NodeFilterOperator {
+		Equals = 0,
+		NotEquals = 1,
+		LessThan = 2,
+		LessThanOrEquals = 3,
+		GreaterThan = 4,
+		GreaterThanOrEquals = 5,
+		Between = 6,
+		NotBetween = 7,
+		Contains = 8,
+		NotContains = 9,
+		StartsWith = 10,
+		NotStartsWith = 11,
+		EndsWith = 12,
+		NotEndsWith = 13
+	}
+
+	export namespace window {
+		export interface Wizard extends LoadingComponentBase {
+		}
+
+		export interface Dialog extends LoadingComponentBase {
+		}
+
+		/**
+		 * Opens the error dialog with customization options provided.
+		 * @param options Dialog options to customize error dialog.
+		 * @returns Id of action button clicked by user, e.g. ok, cancel
+		 */
+		export function openCustomErrorDialog(options: IErrorDialogOptions): Thenable<string | undefined>;
+
+		/**
+		 * Provides dialog options to customize modal dialog content and layout
+		 */
+		export interface IErrorDialogOptions {
+			/**
+			 * Severity Level to identify icon of modal dialog.
+			 */
+			severity: MessageLevel;
+			/**
+			 * Title of modal dialog header.
+			 */
+			headerTitle: string;
+			/**
+			 * Message text to show on dialog.
+			 */
+			message: string;
+			/**
+			 * (Optional) Detailed message, e.g stack trace of error.
+			 */
+			messageDetails?: string;
+			/**
+			 * Telemetry View to be used for emitting telemetry events.
+			 */
+			telemetryView?: string,
+			/**
+			 * (Optional) List of custom actions to include in modal dialog alongwith a 'Cancel' button.
+			 * If custom 'actions' are not provided, 'OK' button will be shown by default.
+			 */
+			actions?: IDialogAction[];
+			/**
+			 * (Optional) If provided, instruction text is shown in bold below message.
+			 */
+			instructionText?: string;
+			/**
+			 * (Optional) If provided, appends read more link after instruction text.
+			 */
+			readMoreLink?: string;
+		}
+
+		/**
+		 * An action that will be rendered as a button on the dialog.
+		 */
+		export interface IDialogAction {
+			/**
+			 * Identifier of action.
+			 */
+			id: string;
+			/**
+			 * Label of Action button.
+			 */
+			label: string;
+			/**
+			 * Defines if button styling and focus should be based on primary action.
+			 */
+			isPrimary: boolean;
+		}
+	}
+
+	export interface TableComponent {
+		/**
+		 * Set active cell.
+		 */
+		setActiveCell(row: number, column: number): void;
+	}
+
+	export interface ProfilerProvider {
+		startSession(sessionId: string, sessionName: string, sessionType?: ProfilingSessionType): Thenable<boolean>;
+	}
+
+	export enum ProfilingSessionType {
+		RemoteSession = 0,
+		LocalFile = 1
+	}
+
+	export interface SplitViewLayout extends FlexLayout {
+		/**
+		 * SplitView size. Height if the orientation is vertical, width if the orientation is horizontal
+		 * If undefined, the size of the model view container is used
+		 */
+		splitViewSize?: number | string | undefined;
+	}
 }
