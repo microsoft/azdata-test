@@ -1943,17 +1943,19 @@ declare module 'azdata' {
 		NotEndsWith = 13
 	}
 
+
 	export interface ModelView extends vscode.Disposable { }
 
+	export interface DeclarativeTableMenuCellValue extends vscode.Disposable { }
+
 	export namespace window {
-		export interface Wizard extends LoadingComponentBase {
-		}
+		export interface Wizard extends LoadingComponentBase { }
 
-		export interface Dialog extends LoadingComponentBase {
-		}
+		export interface Dialog extends LoadingComponentBase, vscode.Disposable { }
 
-		export interface ModelViewPanel extends vscode.Disposable {
-		}
+		export interface ModelViewPanel extends vscode.Disposable { }
+
+		export interface ModelViewDashboard extends vscode.Disposable { }
 
 		/**
 		 * Opens the error dialog with customization options provided.
