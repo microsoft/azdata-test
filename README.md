@@ -129,10 +129,8 @@ go()
 
 Release a new version of the extension by:
 
-1. Run `npm run release`
-2. Run `git push --follow-tags origin main`
-3. The release will be created in Github automatically by the CD pipeline, go to it and download the package artifact (tgz)
-4. Run `npm publish <path to tarball>`
+1. The release will be created in Github automatically by the CD pipeline, go to it and download the package artifact (tgz)
+2. Run `npm publish <path to tarball>`
 
 ## License
 
