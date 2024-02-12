@@ -3,7 +3,7 @@
  *  Licensed under the Source EULA. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import type * as vscode from 'vscode';
 import * as TypeMoq from 'typemoq';
 
 /**
@@ -13,7 +13,6 @@ import * as TypeMoq from 'typemoq';
  * @returns The mocked editor
  */
 export function createTextEditorMock(document: vscode.TextDocument, selections?: vscode.Selection[]): TypeMoq.IMock<vscode.TextEditor> {
-	selections  = (!selections || selections.length === 0) ? [new vscode.Selection(new vscode.Position(0, 0), new vscode.Position(0, 0))] : selections;
 	const mock = TypeMoq.Mock.ofType<vscode.TextEditor>();
 	mock.setup(m => m.document).returns(() => document);
 	mock.setup(m => m.selection).returns(() => selections[0]);

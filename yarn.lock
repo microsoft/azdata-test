@@ -28,10 +28,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@types/azdata@^1.45.0":
-  version "1.45.0"
-  resolved "https://registry.yarnpkg.com/@types/azdata/-/azdata-1.45.0.tgz#19b441d7a0a29546c87d915419964d283f6d15d4"
-  integrity sha512-OYAAPPORFgQw9Dw9gXPSXHeQdFWOggci5qF7D0is+QMAwAx6FG4ja5PO6Jwvv/twB+R/ltLDYhx95zRP42e3nQ==
+"@types/azdata@^1.46.5":
+  version "1.46.5"
+  resolved "https://registry.yarnpkg.com/@types/azdata/-/azdata-1.46.5.tgz#58be51cacd8267583f521b3b05a98d06faf7f8fe"
+  integrity sha512-HFOtWFQ0w5cOfvSIFaXnbw/FPrYApTC31IwGE8yBCeiQ4ZABLi12AXEjsqYS7Dcxm2W6Fmyfi3S98uKRK8vc3A==
   dependencies:
     "@types/vscode" "*"
 
@@ -77,10 +77,10 @@
     "@types/glob" "*"
     "@types/node" "*"
 
-"@types/vscode@*", "@types/vscode@1.62.0":
-  version "1.62.0"
-  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.62.0.tgz#b4d6d192d5aeb75e91d0adef689c3ecef9879da7"
-  integrity sha512-iGlQJ1w5e3qPUryroO6v4lxg3ql1ztdTCwQW3xEwFawdyPLoeUSv48SYfMwc7kQA7h6ThUqflZIjgKAykeF9oA==
+"@types/vscode@*", "@types/vscode@1.82.0":
+  version "1.82.0"
+  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.82.0.tgz#89b0b21179dcf5e8cee1664a9a05c5f6c60d38d0"
+  integrity sha512-VSHV+VnpF8DEm8LNrn8OJ8VuUNcBzN3tMvKrNpbhhfuVjFm82+6v44AbDhLvVFgCzn6vs94EJNTp7w8S6+Q1Rw==
 
 agent-base@6:
   version "6.0.2"

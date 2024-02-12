@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as path from 'path';
-import { InterfaceContributions, MochaOptions } from 'mocha';
+import type { InterfaceContributions, MochaOptions } from 'mocha';
 
 /**
  * Get default mocha options for ADS test, using the below environment variables to control what values various options are set to.
