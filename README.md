@@ -18,6 +18,7 @@ Supported:
 This package provides a set of basic stubs and mocks to help test various parts of the Azure Data Studio extensibility layer which are difficult or repetitive for extensions to implement themselves.
 
 These are located in the `lib/mocks` and `lib/stubs` folders.
+
 ## Usage
 
 and [Travis CI](https://github.com/microsoft/azdata-test/blob/master/.travis.yml) configuration.
@@ -118,6 +119,10 @@ async function go() {
 
 go()
 ```
+
+## Required Package Versions
+
+To use this package you will need to match the `@types/mocha`, `@types/azudata` and `@types/vscode` package versions in your extension, otherwise you are likely to get compile errors.
 
 ## Development
 

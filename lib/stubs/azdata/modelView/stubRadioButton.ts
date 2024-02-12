@@ -3,11 +3,15 @@
  *  Licensed under the Source EULA. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as azdata from 'azdata';
-import * as vscode from 'vscode';
+import type * as azdata from 'azdata';
+import type * as vscode from 'vscode';
 import { StubComponent } from './stubComponent';
 
 export class StubRadioButton extends StubComponent implements azdata.RadioButtonComponent {
+
+	constructor(private readonly _onDidClickEmitter?: vscode.EventEmitter<any>, private readonly _onDidChangeCheckedStateEmitter?: vscode.EventEmitter<boolean>) {
+		super();
+	}
 	// Helper functions
 	click() {
 		this.checked = true;
@@ -18,11 +22,8 @@ export class StubRadioButton extends StubComponent implements azdata.RadioButton
 
 	readonly id = 'radio-button';
 
-	private _onDidClickEmitter = new vscode.EventEmitter<any>();
-	private _onDidChangeCheckedStateEmitter = new vscode.EventEmitter<boolean>();
-
-	onDidClick = this._onDidClickEmitter.event;
-	onDidChangeCheckedState = this._onDidChangeCheckedStateEmitter.event;
+	onDidClick = this._onDidClickEmitter?.event;
+	onDidChangeCheckedState = this._onDidChangeCheckedStateEmitter?.event;
 
 	label?: string;
 	value?: string;

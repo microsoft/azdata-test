@@ -4,4 +4,3 @@
  *--------------------------------------------------------------------------------------------*/
 
 /// <reference path='./azdata.proposed.d.ts'/>
-/// <reference path='./vscode.proposed.d.ts'/>

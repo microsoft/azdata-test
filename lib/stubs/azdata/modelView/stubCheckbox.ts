@@ -3,11 +3,10 @@
  *  Licensed under the Source EULA. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as azdata from 'azdata';
-import * as vscode from 'vscode';
+import type * as azdata from 'azdata';
+import type * as vscode from 'vscode';
 
 export class StubCheckbox implements azdata.CheckBoxComponent {
-	private _onChanged = new vscode.EventEmitter<void>();
 	private _checked = false;
 
 	readonly id = 'stub-checkbox';
@@ -18,8 +17,10 @@ export class StubCheckbox implements azdata.CheckBoxComponent {
 	}
 	set checked(value: boolean) {
 		this._checked = value;
-		this._onChanged.fire();
+		this._onChanged?.fire();
 	}
+
+	constructor(private readonly _onChanged?: vscode.EventEmitter<void>) { }
 
 	onChanged: vscode.Event<any> = this._onChanged.event;
 
